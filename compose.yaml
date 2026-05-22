@@ -1,0 +1,33 @@
+services:
+  frankenphp:
+    container_name: frankenphp
+    build:
+      context: .
+      dockerfile: build/dev/Dockerfile
+    volumes:
+      - .:/app
+      - node_modules:/app/src/node_modules
+      - ./build/dev/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./build/dev/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+      - ./build/dev/php.ini:/usr/local/etc/php/conf.d/99-timezone.ini:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - apps
+    environment:
+      - PHP_IDE_CONFIG=serverName=localhost
+      - TZ=Europe/Prague
+volumes:
+  node_modules:
+  caddy_data:
+  caddy_config:
+networks:
+  apps:
+    external: true
+    driver: bridge

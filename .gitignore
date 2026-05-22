@@ -1,0 +1,49 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+*.idea
+*.vscode
+build/dev/certs
+
+# Nette
+src/temp
+src/log
+src/.env.*
+upload
+
+# Laravel
+!src/.env.example
+
+# Node
+src/node_modules
+src/public/build
+src/public/hot
+
+# Composer
+src/vendor
+src/composer.lock
+
+# Testing
+src/coverage
+src/phpunit.xml
+src/.phpunit.result.cache
+
+# Laravel specific
+src/bootstrap/cache/*.php
+src/storage/*.key
+src/storage/framework/cache/data/*
+src/storage/framework/sessions/*
+src/storage/framework/testing/*
+src/storage/framework/views/*
+src/storage/logs/*
+
+# Symfony specific
+src/var/
+src/config/secrets/prod/prod.decrypt.private.php
