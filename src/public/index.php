@@ -247,7 +247,7 @@ function showUI() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP Starter Kit — Setup Wizard</title>
+    <title>Orders Api Example — Setup Wizard</title>
     <style>
         *, *::before, *::after {
             margin: 0;
@@ -768,7 +768,7 @@ function showUI() {
 
     <div class="content">
         <div class="hero">
-            <div class="hero-badge">PHP Starter Kit</div>
+            <div class="hero-badge">Orders Api Example</div>
             <h1>Choose Your Framework</h1>
             <p>Select a framework to install and set up your project automatically.</p>
         </div>
@@ -828,7 +828,7 @@ function showUI() {
         </div>
 
         <div class="footer">
-            PHP Starter Kit &copy; <?php echo date('Y'); ?>
+            Orders Api Example &copy; <?php echo date('Y'); ?>
         </div>
     </div>
 

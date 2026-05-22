@@ -1,4 +1,4 @@
-# Agent Context for PHP Starter Kit
+# Agent Context for Orders Api Example
 
 ## Stack
 
@@ -24,9 +24,9 @@ All development runs inside Docker containers via `docker compose`.
 **All `php artisan`, `bin/console`, and `npm` commands must run inside containers:**
 
 ```shell
-docker compose exec frankenphp php artisan <cmd>
-docker compose exec frankenphp bin/console <cmd>
-docker compose exec frankenphp npm <cmd>
+docker compose exec orders-api-example php artisan <cmd>
+docker compose exec orders-api-example bin/console <cmd>
+docker compose exec orders-api-example npm <cmd>
 ```
 
 ## Key Commands

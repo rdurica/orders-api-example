@@ -1,7 +1,7 @@
 {
-    "name": "PHP Starter Kit",
+    "name": "Orders Api Example",
     "dockerComposeFile": "../compose.yaml",
-    "service": "frankenphp",
+    "service": "orders-api-example",
     "workspaceFolder": "/app",
     "initializeCommand": "make up",
     "overrideCommand": false,

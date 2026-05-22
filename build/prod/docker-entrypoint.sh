@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "PHP Starter Kit - Starting..."
+echo "Orders Api Example - Starting..."
 
 wait_for() {
     local host="$1" port="$2" name="$3" max=30 i=0

@@ -1,11 +1,11 @@
-# PHP Starter Kit
+# Orders Api Example
 
 Modern Docker-based starter kit for PHP applications built on **FrankenPHP** — a Caddy-powered PHP server with HTTP/2, HTTP/3, and automatic HTTPS.
 
 [![PHP](https://img.shields.io/badge/PHP-8.5-blue.svg)](http://php.net)
 [![FrankenPHP](https://img.shields.io/badge/FrankenPHP-1.x-blue.svg)](https://frankenphp.dev/)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue.svg)](https://www.docker.com/)
-[![Tests](https://github.com/rdurica/php_starter_kit/actions/workflows/ci.yaml/badge.svg)](https://github.com/rdurica/php_starter_kit/actions)
+[![Tests](https://github.com/rdurica/orders-api-example/actions/workflows/ci.yaml/badge.svg)](https://github.com/rdurica/orders-api-example/actions)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ![Banner](docs/img/banner.png)
@@ -32,7 +32,7 @@ Modern Docker-based starter kit for PHP applications built on **FrankenPHP** —
 ## Quick Start
 
 ```bash
-git clone https://github.com/rdurica/php_starter_kit.git && cd php_starter_kit && make init
+git clone https://github.com/rdurica/orders-api-example.git && cd orders-api-example && make init
 ```
 
 Then open [https://localhost](https://localhost) (auto-generated certificate) and select your framework from the setup wizard.

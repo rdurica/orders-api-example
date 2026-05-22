@@ -1,6 +1,6 @@
 services:
-  frankenphp:
-    container_name: frankenphp
+  orders-api-example:
+    container_name: orders-api-example
     build:
       context: .
       dockerfile: build/dev/Dockerfile
