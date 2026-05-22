@@ -12,6 +12,8 @@
         "vscode": {
             "extensions": [
                 "bmewburn.vscode-intelephense-client",
+                "junstyle.php-cs-fixer",
+                "swordev.phpstan",
                 "xdebug.php-debug",
                 "dbaeumer.vscode-eslint",
                 "esbenp.prettier-vscode",
@@ -29,7 +31,21 @@
                     "bash": {
                         "path": "/bin/bash"
                     }
-                }
+                },
+                "[php]": {
+                    "editor.defaultFormatter": "junstyle.php-cs-fixer",
+                    "editor.formatOnSave": true
+                },
+                "php-cs-fixer.executablePath": "/app/src/vendor/bin/php-cs-fixer",
+                "php-cs-fixer.onsave": true,
+                "php-cs-fixer.config": "/app/src/.php-cs-fixer.dist.php",
+                "phpstan.enabled": true,
+                "phpstan.binPath": "/app/src/vendor/bin/phpstan",
+                "phpstan.configFile": "/app/src/phpstan.neon",
+                "phpstan.rootDir": "/app/src",
+                "intelephense.environment.includePaths": [
+                    "/app/src/vendor"
+                ]
             }
         }
     }

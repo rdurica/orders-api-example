@@ -15,11 +15,10 @@ build/dev/certs
 # Nette
 src/temp
 src/log
+src/.env!
 src/.env.*
+!src/.env.dev
 upload
-
-# Laravel
-!src/.env.example
 
 # Node
 src/node_modules

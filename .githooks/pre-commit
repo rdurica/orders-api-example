@@ -1,23 +1,36 @@
 #!/bin/sh
+set -e
+
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
-# 1. Inside Dev Container or with local Node
-if [ -n "$REMOTE_CONTAINERS" ] || [ -f /.dockerenv ] || command -v npx >/dev/null 2>&1; then
+run_backend_checks() {
+    if [ -f /app/src/composer.json ]; then
+        cd /app/src
+    elif [ -f src/composer.json ]; then
+        cd src
+    else
+        echo "No composer.json found; skipping backend checks."
+        exit 0
+    fi
+
+    composer cs-check
+    composer phpstan
+}
+
+# 1. Inside Dev Container or Docker container
+if [ -n "$REMOTE_CONTAINERS" ] || [ -f /.dockerenv ]; then
     git config --global --add safe.directory /app 2>/dev/null || true
-    npx lint-staged
+    run_backend_checks
     exit $?
 fi
 
 # 2. With Docker on host
 if command -v docker >/dev/null 2>&1; then
-    docker compose run --rm \
-        -v "./.git:/app/.git" \
-        -w /app/src \
-        -e GIT_DISCOVERY_ACROSS_FILESYSTEM=1 \
-        frankenphp sh -c "git config --global --add safe.directory /app && npx lint-staged"
+    docker compose exec -T orders-api-example bash -lc 'cd /app/src && composer cs-check && composer phpstan' \
+        || docker compose run --rm -T orders-api-example bash -lc 'cd /app/src && composer cs-check && composer phpstan'
     exit $?
 fi
 
 # 3. Nothing available
-echo "Warning: No formatting tool found, skipping pre-commit"
+echo "Warning: Docker not available, skipping pre-commit checks"
 exit 0

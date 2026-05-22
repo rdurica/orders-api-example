@@ -7,7 +7,7 @@ src/log
 src/temp
 src/.env
 src/.env.*
-!src/.env.example
+!src/.env.dev
 upload
 .gitignore
 .dockerignore

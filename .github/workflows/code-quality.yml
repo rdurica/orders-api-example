@@ -84,18 +84,6 @@ jobs:
 
                     composer validate --strict
                     composer install --no-interaction --prefer-dist
-
-                    if [ -f phpstan.neon ] || [ -f phpstan.dist.neon ]; then
-                      vendor/bin/phpstan analyse --no-progress --memory-limit=1G
-                    else
-                      echo "No PHPStan config found; skipping static analysis."
-                    fi
-
-                    if [ -f .php-cs-fixer.dist.php ] || [ -f .php-cs-fixer.php ]; then
-                      vendor/bin/php-cs-fixer fix --dry-run --diff
-                    else
-                      echo "No PHP CS Fixer config found; skipping code style."
-                    fi
-
+                    composer all-checks
                     composer audit
                   '

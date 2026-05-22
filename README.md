@@ -1,132 +1,148 @@
-# Orders Api Example
+# Orders API
 
-Modern Docker-based starter kit for PHP applications built on **FrankenPHP** — a Caddy-powered PHP server with HTTP/2, HTTP/3, and automatic HTTPS.
+Ukázkový REST API projekt pro příjem objednávek od partnerských obchodů. Repozitář slouží jako ukazka a způsob práce s kódem, architekturou a nástroji, se kterými běžně pracuji.
 
-[![PHP](https://img.shields.io/badge/PHP-8.5-blue.svg)](http://php.net)
-[![FrankenPHP](https://img.shields.io/badge/FrankenPHP-1.x-blue.svg)](https://frankenphp.dev/)
-[![Docker](https://img.shields.io/badge/Docker-ready-blue.svg)](https://www.docker.com/)
-[![Tests](https://github.com/rdurica/orders-api-example/actions/workflows/ci.yaml/badge.svg)](https://github.com/rdurica/orders-api-example/actions)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+## O projektu
 
-![Banner](docs/img/banner.png)
+Aplikace přijímá data o objednávkách od externích partnerů a ukládá je do PostgreSQL. Scope je záměrně úzký: dva endpointy, jeden modul (`Orders`) a sdílené jádro (`Core`). Cílem není kompletní produkční systém, ale přehledná ukázka návrhu API, vrstvení aplikace a práce s kvalitou kódu.
 
-<p align="center">
-  <img src="docs/img/setup-main.png" width="32%" alt="Setup Wizard">
-  <img src="docs/img/setup-progress.png" width="32%" alt="Installation Progress">
-  <img src="docs/img/setup-success.png" width="32%" alt="Installation Complete">
-</p>
+## Technologie
 
-## Table of Contents
+Backend běží na **PHP 8.5** se **Symfony 8**, perzistenci zajišťuje **Doctrine** nad **PostgreSQL 16** a celé prostředí je zabalené ve **FrankenPHP** v Dockeru. Kvalitu kódu hlídá **PHPStan** (level 8) a formátování **PHP CS Fixer** v Allman stylu.
 
-- [Quick Start](#quick-start)
-- [Overview](#overview)
-- [Requirements](#requirements)
-- [Available Commands](#available-commands)
-- [Framework Installation](#framework-installation)
-- [Environments](#environments)
-- [Production](#production)
-- [CI/CD](#cicd)
-- [Security](#security)
-- [License](#license)
+## Casova narocnost
+Celkovy rozpad prace na projektu.
 
-## Quick Start
+| Polozka | Cas |
+|--------|-------|
+| Priprava architektury projektu, navrh DB, endpointu a DTOs | 0.75h |
+| Implementace / Validace | 1.5h |
+| Dokumentace | 0.25h |
+| Testy | 0h |
 
-```bash
-git clone https://github.com/rdurica/orders-api-example.git && cd orders-api-example && make init
+## Todo
+ - Doimplementovat logiku zatim mam jen kostru
+ - Unit testy
+ - Rozepsat navrh architektury, myslenkove pochody pri navrhu, strukturu (neanotujem metody ktore jsou jasne ani tridy), kompromisy a co by realne se udelalo jinak (Price ValueObject, Partner separe tabulka a FK a podobne...)
+ - Doupravit readme a dokumentaci
+ - Funkcni testy**
+ - Udelat compose i z db aby slo spustit 1 prikazem**
+
+
+** Nice to have
+
+## Architektura
+
+Projekt používá **zjednodušenou hexagonální architekturu**. Doménová logika je oddělená od HTTP vrstvy a perzistence probíhá přes repository.
+
+```
+HTTP request
+    → Controller (tenká vrstva, pouze mapování)
+    → Handler (transakce, orchestrace)
+    → Service (business logika)
+    → Repository (Doctrine)
 ```
 
-Then open [https://localhost](https://localhost) (auto-generated certificate) and select your framework from the setup wizard.
+### Vrstvy
 
----
+| Vrstva | Odpovědnost |
+|--------|-------------|
+| **Controller** | Přijme request, vytvoří DTO, předá handleru, vrátí JSON odpověď. Pouze `__invoke`. |
+| **Handler** | Obalí operaci do transakce (`TransactionManager`), volá service. Pouze `__invoke`. |
+| **Service** | Business pravidla, idempotence, validace doménových pravidel. |
+| **Repository** | Přístup k datům (Doctrine). |
+| **DTO** | Request/Response objekty s validací přes Symfony Validator. |
 
+### Moduly
 
-## Overview
-
-This starter kit provides a ready-to-use, out-of-the-box local development environment for modern PHP projects. It comes preconfigured with everything you need to start coding immediately, without wasting time on setup and configuration.
-
-**Key aspects:**
-
-- **FrankenPHP** — Modern PHP application server with HTTP/2, HTTP/3, and automatic HTTPS
-- **Secure by default** — Non-root user, security headers, hardened sessions, no `expose_php`
-- **Multi-environment** — Dev and CI configurations
-- **Multi-stage production build** — Minimal attack surface, optimized layers
-- **CI/CD ready** — GitHub Actions with code quality, tests, security scanning
-- **DevContainer support** — VSCode remote containers out of the box
-- **One-click framework installer** — Web-based setup wizard for Laravel, Symfony, and Nette
-- **Frontend ready** — Node.js and Vite integrated in the dev container
-
-## Requirements
-
-- [Docker](https://docs.docker.com/get-docker/) & Docker Compose
-- [Make](https://www.gnu.org/software/make/) (optional but recommended)
-- `sudo` access for trusting local HTTPS certificates
-
-## Available Commands
-
-Common development tasks are automated via make. These commands manage the Docker containers and development workflow.
-
-| Command | Description |
-|---------|-------------|
-| `make init` | First-time setup: network, images, containers |
-| `make up` | Start containers in detached mode |
-| `make down` | Stop and remove containers |
-| `make logs` | Show live logs from all containers |
-| `make php` | Open shell inside the FrankenPHP container |
-| `make rebuild` | Force rebuild images (--pull --no-cache) |
-| `make reload` | Rebuild images with cache |
-| `make setup-githooks` | Enable pre-commit hooks |
-| `make trust-cert` | Trust Caddy's local CA certificate |
-
-## Framework Installation
-
-After running `make init`, open [https://localhost](https://localhost). The setup wizard will present three framework options:
-
-| Framework | Description |
-|-----------|-------------|
-| **Symfony** | Robust architecture with reusable components |
-| **Laravel** | Expressive syntax and rich ecosystem |
-| **Nette** | Security-focused, Czech-made framework |
-
-Click your chosen framework and confirm the installation. The wizard will:
-
-1. Download and install the framework via Composer
-2. Display real-time progress and terminal output
-3. Move files into place automatically (including Nette's `www/` → `public/` migration)
-4. Back up the landing page to `/setup.php`
-
-After installation, you can delete `/setup.php` via the success dialog or manually:
-
-## Environments
-
-### Development (`compose.yaml`)
-- FrankenPHP with xdebug, Node.js, Git, Symfony CLI, Laravel installer
-- Caddy auto HTTPS on https://localhost
-- Vite dev server running in the background
-- Volume mount for live code editing
-
-### CI (`compose.ci.yaml`)
-- Lightweight FrankenPHP image (no xdebug, no Node)
-- SQLite in-memory for fast tests
-- Ideal for GitHub Actions
-
-## Production
-
-Build the production image:
-
-```bash
-docker build -f build/prod/Dockerfile -t myapp:latest .
+```
+src/
+├── Core/          # Sdílené stavební bloky (transakce, výjimky, HTTP helpery)
+└── Orders/        # Doménový modul objednávek
+    ├── Controller/
+    ├── Handler/
+    ├── Service/
+    ├── Repository/
+    ├── Entity/
+    ├── Dto/
+    └── Exception/
 ```
 
-## CI/CD
+### Návrh architektury
 
-Three GitHub Actions workflows are included:
+<!-- TODO: doplnit -->
 
-| Workflow | Description |
-|----------|-------------|
-| `code-quality.yml` | PHPStan, PHP CS Fixer, Composer audit, Frontend lint |
-| `ci.yml` | Framework auto-detection, PHPUnit tests, Docker lint |
-| `build.yml` | Multi-stage prod image build, GHCR push, Trivy security scan |
+### Kompromisy a co bych řešil jinak ve větším systému
 
-## License
+<!-- TODO: doplnit -->
 
-This project is licensed under the terms of the MIT license.
+
+
+## API
+
+Chyby jsou vraceny ve formátu [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807) (`application/problem+json`).
+
+### `POST /v1/orders` — vytvoření objednávky
+
+Vytvoří novou objednávku včetně položek. Volání je **idempotentní**: pokud objednávka se stejným `partnerId` + `orderId` už existuje a všechny položky se shodují, vrátí se úspěch. Pokud se objednávka shoduje, ale alespoň jedna položka se liší, vrátí se chyba `OrderAlreadyExists`.
+
+**Request:**
+
+```json
+{
+  "partnerId": "partner-001",
+  "orderId": "ORD-2026-001",
+  "expectedDeliveryDate": "2026-06-15T14:00:00+02:00",
+  "products": [
+    {
+      "id": "SKU-123",
+      "title": "Produkt A",
+      "price": 199.90,
+      "quantity": 2
+    }
+  ]
+}
+```
+
+**Response** `201 Created`:
+
+```json
+{
+  "status": "created",
+  "message": "Order was created successfully."
+}
+```
+
+**Možné chyby:** `OrderAlreadyExists`, `InvalidData`, `Unexpected`
+
+### `PATCH /v1/orders` — změna data doručení
+
+Aktualizuje `expectedDeliveryDate` u existující objednávky. Volání je **idempotentní** — opakovaný update na stejné datum vrátí úspěch.
+
+**Request:**
+
+```json
+{
+  "partnerId": "partner-001",
+  "orderId": "ORD-2026-001",
+  "expectedDeliveryDate": "2026-06-20T10:00:00+02:00"
+}
+```
+
+**Response** `200 OK`:
+
+```json
+{
+  "success": true,
+  "message": "Order delivery date was updated successfully."
+}
+```
+
+**Možné chyby:** `OrderNotFound`, `InvalidDate`, `Unexpected`
+
+## Notes
+Validaci a propagace API vyjimek jsem se inspiroval u jedneho meho starsiho projektu a jen upravil pro tento ucel. Nevymyslal jsem to nanovo pro tento ukol.
+
+## Licence
+
+MIT
