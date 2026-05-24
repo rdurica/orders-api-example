@@ -11,14 +11,14 @@ Aplikace přijímá data o objednávkách od externích partnerů a ukládá je 
 Backend běží na **PHP 8.5** se **Symfony 8**, perzistenci zajišťuje **Doctrine** nad **PostgreSQL 16** a celé prostředí je zabalené ve **FrankenPHP** v Dockeru. Kvalitu kódu hlídá **PHPStan** (level 8) a formátování **PHP CS Fixer** v Allman stylu.
 
 ## Casova narocnost
-Celkovy rozpad prace na projektu. (total: 2,5)
+Celkovy rozpad prace na projektu. (total: 4,5)
 
-| Polozka | Cas |
+| Polozka | Cas   |
 |--------|-------|
 | Priprava architektury projektu, navrh DB, endpointu a DTOs | 0.75h |
-| Implementace / Validace | 1.5h |
+| Implementace / Validace | 3.5h  |
 | Dokumentace | 0.25h |
-| Testy | 0h |
+| Testy | 0h    |
 
 ## Todo
  - Doimplementovat logiku zatim mam jen kostru
