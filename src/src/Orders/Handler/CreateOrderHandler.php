@@ -33,10 +33,10 @@ final class CreateOrderHandler
      */
     public function __invoke(CreateOrderRequest $request): SimpleResponse
     {
-        $partnerId = PartnerId::create($request->partnerId);
-        $orderId = OrderId::create($request->orderId);
+        $partnerId    = PartnerId::create($request->partnerId);
+        $orderId      = OrderId::create($request->orderId);
         $deliveryDate = ExpectedDeliveryDate::create($request->expectedDeliveryDate);
-        $orderItems = CreateOrderHandler::createOrderItems($request->products);
+        $orderItems   = CreateOrderHandler::createOrderItems($request->products);
 
         // Teoreticky muze nastat RaceCondition jelikoz delame entity mimo transakci.
         // Nechci mit ale dlouhe transakce a toto si myslim je vhodny kompromis co se tyce vykonu/komplexity.
@@ -47,7 +47,6 @@ final class CreateOrderHandler
         }
 
         $orderEntity = $this->orderEntityFactory->create($partnerId, $orderId, $deliveryDate, $orderItems);
-
         $this->transactionManager->transactional(function () use ($orderEntity): void
         {
             $this->orderRepository->save($orderEntity);
@@ -98,7 +97,6 @@ final class CreateOrderHandler
         }
 
         $orderItems = [];
-
         foreach ($products as $product)
         {
             $orderItems[] = OrderItem::create($product);

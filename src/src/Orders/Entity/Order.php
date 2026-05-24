@@ -6,7 +6,9 @@ namespace App\Orders\Entity;
 
 use App\Core\Trait\RecordTimestamps;
 use App\Orders\Repository\OrderRepository;
+use App\Orders\Value\ExpectedDeliveryDate;
 use App\Orders\Value\OrderItem as OrderItemVo;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -38,13 +40,13 @@ class Order
     private string $orderId;
 
     #[ORM\Column(name: 'expected_delivery_date', type: 'datetime_immutable')]
-    private \DateTimeImmutable $expectedDeliveryDate;
+    private DateTimeImmutable $expectedDeliveryDate;
 
     /** @var Collection<int, OrderItem> */
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order', cascade: ['persist'], orphanRemoval: true)]
     private Collection $items;
 
-    public function __construct(string $partnerId, string $orderId, \DateTimeImmutable $expectedDeliveryDate)
+    public function __construct(string $partnerId, string $orderId, DateTimeImmutable $expectedDeliveryDate)
     {
         $this->uuid = Uuid::v7();
         $this->partnerId = $partnerId;
@@ -73,9 +75,24 @@ class Order
         return $this->orderId;
     }
 
-    public function expectedDeliveryDate(): \DateTimeImmutable
+    public function expectedDeliveryDate(): DateTimeImmutable
     {
         return $this->expectedDeliveryDate;
+    }
+
+    public function setExpectedDeliveryDate(DateTimeImmutable $expectedDeliveryDate): self
+    {
+        $this->expectedDeliveryDate = $expectedDeliveryDate;
+
+        return $this;
+    }
+
+    public function hasSameExpectedDeliveryDateAs(ExpectedDeliveryDate $deliveryDate): bool
+    {
+        $currentValue = $this->expectedDeliveryDate->format('Y-m-d H:i:s');
+        $newValue = $deliveryDate->value()->format('Y-m-d H:i:s');
+
+        return $currentValue === $newValue;
     }
 
     /** @return Collection<int, OrderItem> */
