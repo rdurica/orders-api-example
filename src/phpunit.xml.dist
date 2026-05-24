@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         failOnNotice="true"
+         failOnWarning="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+
+    <extensions>
+        <bootstrap class="DG\BypassFinals\PHPUnitExtension">
+            <parameter name="bypassFinal" value="true"/>
+            <parameter name="bypassReadOnly" value="false"/>
+            <parameter name="cacheDirectory" value=".phpunit.cache/bypass-finals"/>
+        </bootstrap>
+    </extensions>
+</phpunit>

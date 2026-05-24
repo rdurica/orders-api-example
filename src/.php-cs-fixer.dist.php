@@ -41,6 +41,14 @@ return (new PhpCsFixer\Config())
         'phpdoc_summary' => false,
         'phpdoc_to_comment' => false,
         'single_line_throw' => false,
+        'global_namespace_import' => [
+            'import_classes' => true,
+            'import_constants' => false,
+            'import_functions' => false,
+        ],
+        'fully_qualified_strict_types' => [
+            'import_symbols' => true,
+        ],
     ])
     ->setParallelConfig(ParallelConfigFactory::detect())
     ->setFinder($finder)

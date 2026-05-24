@@ -33,6 +33,7 @@ src/composer.lock
 src/coverage
 src/phpunit.xml
 src/.phpunit.result.cache
+src/.phpunit.cache/
 
 # Laravel specific
 src/bootstrap/cache/*.php

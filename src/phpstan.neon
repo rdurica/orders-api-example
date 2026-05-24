@@ -5,5 +5,13 @@ parameters:
         - tests/
     excludePaths:
         - config/reference.php
+        - tests/bootstrap.php
     symfony:
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    ignoreErrors:
+        -
+            identifier: method.unresolvableReturnType
+            path: tests/Unit/Orders/Handler/*
+        -
+            identifier: staticMethod.unresolvableReturnType
+            path: tests/Unit/Orders/Handler/*
