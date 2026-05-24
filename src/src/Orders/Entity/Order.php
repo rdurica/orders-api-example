@@ -10,6 +10,7 @@ use App\Orders\Value\ExpectedDeliveryDate;
 use App\Orders\Value\OrderItem as OrderItemVo;
 use DateMalformedStringException;
 use DateTimeImmutable;
+use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -93,8 +94,8 @@ class Order
      */
     public function hasSameExpectedDeliveryDateAs(ExpectedDeliveryDate $deliveryDate): bool
     {
-        $currentUtc = new DateTimeImmutable($this->expectedDeliveryDate->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
-        $incomingUtc = $deliveryDate->value()->setTimezone(new \DateTimeZone('UTC'));
+        $currentUtc = new DateTimeImmutable($this->expectedDeliveryDate->format('Y-m-d H:i:s'), new DateTimeZone('UTC'));
+        $incomingUtc = $deliveryDate->value()->setTimezone(new DateTimeZone('UTC'));
 
         return $currentUtc->getTimestamp() === $incomingUtc->getTimestamp();
     }

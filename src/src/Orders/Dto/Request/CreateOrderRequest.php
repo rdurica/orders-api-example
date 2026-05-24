@@ -6,6 +6,7 @@ namespace App\Orders\Dto\Request;
 
 use App\Core\Dto\Request\IRequestDto;
 use App\Orders\Dto\ProductDto;
+use DateTimeInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class CreateOrderRequest implements IRequestDto
@@ -18,7 +19,7 @@ final class CreateOrderRequest implements IRequestDto
     #[Assert\NotBlank]
     public string $orderId = '';
 
-    #[Assert\DateTime(format: \DateTimeInterface::RFC3339)]
+    #[Assert\DateTime(format: DateTimeInterface::RFC3339)]
     #[Assert\NotBlank]
     public string $expectedDeliveryDate = '';
 

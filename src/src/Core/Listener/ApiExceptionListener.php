@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Core\Listener;
 
 use App\Core\Exception\Api\ApiException;
+use BackedEnum;
+use DomainException;
+use JsonException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +18,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Exception\PartialDenormalizationException;
+use UnitEnum;
 
 #[AsEventListener(event: KernelEvents::EXCEPTION, priority: 0)]
 final readonly class ApiExceptionListener
@@ -43,7 +47,7 @@ final readonly class ApiExceptionListener
             $type = Response::$statusTexts[$status] ?? $title;
         }
 
-        if ($e instanceof \JsonException)
+        if ($e instanceof JsonException)
         {
             $status = Response::HTTP_BAD_REQUEST;
             $type = 'Bad Request';
@@ -60,7 +64,7 @@ final readonly class ApiExceptionListener
             $detail = 'Invalid request format or data types.';
         }
 
-        if ($e instanceof \DomainException)
+        if ($e instanceof DomainException)
         {
             $status = Response::HTTP_INTERNAL_SERVER_ERROR;
             $type = 'unexpected';
@@ -68,7 +72,7 @@ final readonly class ApiExceptionListener
             $trace = null;
         }
 
-        if ($exposeDetails && !($e instanceof ApiException) && !($e instanceof \DomainException))
+        if ($exposeDetails && !($e instanceof ApiException) && !($e instanceof DomainException))
         {
             if ($status >= Response::HTTP_INTERNAL_SERVER_ERROR)
             {
@@ -125,12 +129,12 @@ final readonly class ApiExceptionListener
 
     private function normalizeData(mixed $data): mixed
     {
-        if ($data instanceof \BackedEnum)
+        if ($data instanceof BackedEnum)
         {
             return $data->value;
         }
 
-        if ($data instanceof \UnitEnum)
+        if ($data instanceof UnitEnum)
         {
             return $data->name;
         }
