@@ -16,12 +16,7 @@ abstract class ApiException extends Exception
     /** @var array<string, mixed> */
     private array $data = [];
 
-    public function __construct(
-        private readonly ApiErrorCode $errorCode,
-        string $message = '',
-        int $code = 400,
-        ?Throwable $previous = null,
-    )
+    public function __construct(private readonly ApiErrorCode $errorCode, string $message = '', int $code = 400, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

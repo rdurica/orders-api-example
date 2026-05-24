@@ -22,7 +22,6 @@ final class ProductDto
     #[Assert\Type('string')]
     public string $price = '';
 
-    #[Assert\NotBlank]
-    #[Assert\Positive]
+    #[Assert\Range(min: 1, max: 100_000)]
     public int $quantity = 0;
 }

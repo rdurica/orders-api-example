@@ -8,6 +8,8 @@ use App\Orders\Exception\Domain\InvalidValueException;
 
 final readonly class Quantity
 {
+    private const int MAX = 100_000;
+
     private function __construct(private int $value)
     {
     }
@@ -17,6 +19,11 @@ final readonly class Quantity
         if ($value <= 0)
         {
             throw new InvalidValueException('Quantity must be a positive integer.');
+        }
+
+        if ($value > self::MAX)
+        {
+            throw new InvalidValueException('Quantity must not exceed 100000.');
         }
 
         return new self($value);

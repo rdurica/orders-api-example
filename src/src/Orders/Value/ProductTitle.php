@@ -10,20 +10,23 @@ final readonly class ProductTitle
 {
     private function __construct(private string $value)
     {
-        if (trim($value) === '')
-        {
-            throw new InvalidValueException('Product title must not be blank.');
-        }
-
-        if (strlen($value) > 255)
-        {
-            throw new InvalidValueException('Product title must not exceed 255 characters.');
-        }
     }
 
     public static function create(string $value): self
     {
-        return new self($value);
+        $trimmed = trim($value);
+
+        if ($trimmed === '')
+        {
+            throw new InvalidValueException('Product title must not be blank.');
+        }
+
+        if (strlen($trimmed) > 255)
+        {
+            throw new InvalidValueException('Product title must not exceed 255 characters.');
+        }
+
+        return new self($trimmed);
     }
 
     public function value(): string

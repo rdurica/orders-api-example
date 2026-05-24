@@ -6,6 +6,7 @@ namespace App\Core\Validator;
 
 use App\Core\Dto\Request\IRequestDto;
 use App\Core\Exception\Api\InvalidContentException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class RequestValidator
@@ -19,22 +20,29 @@ final class RequestValidator
      */
     public function validate(IRequestDto $request): void
     {
-        $violations = $this->validator->validate($request);
+        $errors = $this->collectErrors($this->validator->validate($request));
 
+        if ($errors !== [])
+        {
+            throw new InvalidContentException($errors);
+        }
+    }
+
+    /**
+     * @return list<array{field: string, message: string}>
+     */
+    private function collectErrors(ConstraintViolationListInterface $violations): array
+    {
         $errors = [];
 
         foreach ($violations as $violation)
         {
-            $field = (string) $violation->getPropertyPath();
             $errors[] = [
-                'field'   => $field,
+                'field'   => (string) $violation->getPropertyPath(),
                 'message' => (string) $violation->getMessage(),
             ];
         }
 
-        if (count($errors) > 0)
-        {
-            throw new InvalidContentException($errors);
-        }
+        return $errors;
     }
 }

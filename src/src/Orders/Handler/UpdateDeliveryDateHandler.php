@@ -13,19 +13,18 @@ use App\Orders\Repository\OrderRepository;
 use App\Orders\Value\ExpectedDeliveryDate;
 use App\Orders\Value\OrderId;
 use App\Orders\Value\PartnerId;
+use DateMalformedStringException;
 
 final class UpdateDeliveryDateHandler
 {
-    public function __construct(
-        private readonly TransactionManager $transactionManager,
-        private readonly OrderRepository $orderRepository,
-    )
+    public function __construct(private readonly TransactionManager $transactionManager, private readonly OrderRepository $orderRepository)
     {
     }
 
     /**
      * @throws InvalidValueException
      * @throws OrderNotFoundException
+     * @throws DateMalformedStringException
      */
     public function __invoke(UpdateDeliveryDateRequest $request): SimpleResponse
     {

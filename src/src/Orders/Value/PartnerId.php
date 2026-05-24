@@ -10,20 +10,23 @@ final readonly class PartnerId
 {
     private function __construct(private string $value)
     {
-        if (trim($value) === '')
-        {
-            throw new InvalidValueException('Partner ID must not be blank.');
-        }
-
-        if (strlen($value) > 64)
-        {
-            throw new InvalidValueException('Partner ID must not exceed 64 characters.');
-        }
     }
 
     public static function create(string $value): self
     {
-        return new self($value);
+        $trimmed = trim($value);
+
+        if ($trimmed === '')
+        {
+            throw new InvalidValueException('Partner ID must not be blank.');
+        }
+
+        if (strlen($trimmed) > 64)
+        {
+            throw new InvalidValueException('Partner ID must not exceed 64 characters.');
+        }
+
+        return new self($trimmed);
     }
 
     public function value(): string

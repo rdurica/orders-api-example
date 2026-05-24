@@ -15,6 +15,7 @@ use App\Orders\Exception\Domain\DomainException;
 use App\Orders\Exception\Domain\InvalidValueException;
 use App\Orders\Exception\Domain\OrderNotFoundException;
 use App\Orders\Handler\UpdateDeliveryDateHandler;
+use DateMalformedStringException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +34,7 @@ final class UpdateDeliveryDateController extends ApiController
      * @throws InvalidDateException
      * @throws OrderNotFoundApiException
      * @throws UnexpectedException
+     * @throws DateMalformedStringException
      */
     #[Route('/v1/orders', name: 'orders_update_delivery_date', methods: ['PATCH'])]
     public function __invoke(Request $request): JsonResponse

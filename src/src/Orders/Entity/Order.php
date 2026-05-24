@@ -8,6 +8,7 @@ use App\Core\Trait\RecordTimestamps;
 use App\Orders\Repository\OrderRepository;
 use App\Orders\Value\ExpectedDeliveryDate;
 use App\Orders\Value\OrderItem as OrderItemVo;
+use DateMalformedStringException;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -87,12 +88,15 @@ class Order
         return $this;
     }
 
+    /**
+     * @throws DateMalformedStringException
+     */
     public function hasSameExpectedDeliveryDateAs(ExpectedDeliveryDate $deliveryDate): bool
     {
-        $currentValue = $this->expectedDeliveryDate->format('Y-m-d H:i:s');
-        $newValue = $deliveryDate->value()->format('Y-m-d H:i:s');
+        $currentUtc = new DateTimeImmutable($this->expectedDeliveryDate->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
+        $incomingUtc = $deliveryDate->value()->setTimezone(new \DateTimeZone('UTC'));
 
-        return $currentValue === $newValue;
+        return $currentUtc->getTimestamp() === $incomingUtc->getTimestamp();
     }
 
     /** @return Collection<int, OrderItem> */
@@ -125,7 +129,7 @@ class Order
         }
 
         $requestSignatures = array_map(
-            static fn(OrderItemVo $orderItem): string => OrderItem::signatureFromValues(
+            static fn (OrderItemVo $orderItem): string => OrderItem::signatureFromValues(
                 $orderItem->productId()->value(),
                 $orderItem->title()->value(),
                 $orderItem->price()->value(),
@@ -135,7 +139,7 @@ class Order
         );
 
         $entitySignatures = array_map(
-            static fn(OrderItem $orderItemEntity): string => $orderItemEntity->signature(),
+            static fn (OrderItem $orderItemEntity): string => $orderItemEntity->signature(),
             $this->items->toArray(),
         );
 

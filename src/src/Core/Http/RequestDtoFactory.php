@@ -26,7 +26,9 @@ final class RequestDtoFactory
      * @param class-string<T> $class
      *
      * @return T
+     *
      * @template T of IRequestDto
+     *
      * @throws InvalidContentException
      * @throws ExceptionInterface
      */
@@ -44,11 +46,11 @@ final class RequestDtoFactory
         }
         catch (JsonException|NotEncodableValueException)
         {
-            throw new InvalidContentException([['field' => '', 'message' => 'Invalid JSON payload.',],]);
+            throw new InvalidContentException([['field' => '', 'message' => 'Invalid JSON payload.']]);
         }
         catch (NotNormalizableValueException|PartialDenormalizationException)
         {
-            throw new InvalidContentException([['field' => '', 'message' => 'Invalid request format or data types.',],]);
+            throw new InvalidContentException([['field' => '', 'message' => 'Invalid request format or data types.']]);
         }
 
         $this->validator->validate($dto);
