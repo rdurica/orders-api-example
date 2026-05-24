@@ -28,8 +28,8 @@ final class UpdateDeliveryDateHandler
      */
     public function __invoke(UpdateDeliveryDateRequest $request): SimpleResponse
     {
-        $partnerId    = PartnerId::create($request->partnerId);
-        $orderId      = OrderId::create($request->orderId);
+        $partnerId = PartnerId::create($request->partnerId);
+        $orderId = OrderId::create($request->orderId);
         $deliveryDate = ExpectedDeliveryDate::create($request->expectedDeliveryDate);
 
         $orderEntity = $this->orderRepository->findByPartnerAndOrderId(
