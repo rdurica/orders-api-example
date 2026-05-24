@@ -11,7 +11,7 @@ Aplikace přijímá data o objednávkách od externích partnerů a ukládá je 
 Backend běží na **PHP 8.5** se **Symfony 8**, perzistenci zajišťuje **Doctrine** nad **PostgreSQL 16** a celé prostředí je zabalené ve **FrankenPHP** v Dockeru. Kvalitu kódu hlídá **PHPStan** (level 8) a formátování **PHP CS Fixer** v Allman stylu.
 
 ## Casova narocnost
-Celkovy rozpad prace na projektu.
+Celkovy rozpad prace na projektu. (total: 2,5)
 
 | Polozka | Cas |
 |--------|-------|
@@ -97,7 +97,7 @@ Vytvoří novou objednávku včetně položek. Volání je **idempotentní**: po
     {
       "id": "SKU-123",
       "title": "Produkt A",
-      "price": 199.90,
+      "price": "199.90",
       "quantity": 2
     }
   ]
@@ -108,7 +108,7 @@ Vytvoří novou objednávku včetně položek. Volání je **idempotentní**: po
 
 ```json
 {
-  "status": "created",
+  "success": true,
   "message": "Order was created successfully."
 }
 ```

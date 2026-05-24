@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Exception;
+namespace App\Core\Enum;
 
-enum ExceptionType: string
+enum ApiErrorCode: string
 {
     case INVALID_CONTENT = 'invalid_content';
 

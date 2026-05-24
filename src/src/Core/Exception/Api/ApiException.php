@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Exception;
+namespace App\Core\Exception\Api;
 
-abstract class ApiException extends \Exception
+use App\Core\Enum\ApiErrorCode;
+use Exception;
+use Throwable;
+
+abstract class ApiException extends Exception
 {
     /** @var list<array{field: string, message: string}> */
     private array $errors = [];
@@ -12,16 +16,19 @@ abstract class ApiException extends \Exception
     /** @var array<string, mixed> */
     private array $data = [];
 
-    private ExceptionType $type = ExceptionType::INVALID_CONTENT;
-
-    public function __construct(string $message = '', int $code = 400, ?\Throwable $previous = null)
+    public function __construct(
+        private readonly ApiErrorCode $errorCode,
+        string $message = '',
+        int $code = 400,
+        ?Throwable $previous = null,
+    )
     {
         parent::__construct($message, $code, $previous);
     }
 
-    public function type(): ExceptionType
+    public function errorCode(): ApiErrorCode
     {
-        return $this->type;
+        return $this->errorCode;
     }
 
     /** @return list<array{field: string, message: string}> */
@@ -42,11 +49,6 @@ abstract class ApiException extends \Exception
             'field'   => $field,
             'message' => $message,
         ];
-    }
-
-    protected function setType(ExceptionType $type): void
-    {
-        $this->type = $type;
     }
 
     protected function setData(string $key, mixed $value): void

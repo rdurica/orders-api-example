@@ -16,9 +16,11 @@ final class ProductDto
     #[Assert\NotBlank]
     public string $title = '';
 
+    #[Assert\GreaterThan('0')]
     #[Assert\NotBlank]
-    #[Assert\Positive]
-    public float $price = 0.0;
+    #[Assert\Regex(pattern: '/^\d+(\.\d{1,2})?$/', message: 'Price must be a positive decimal with up to 2 decimal places.')]
+    #[Assert\Type('string')]
+    public string $price = '';
 
     #[Assert\NotBlank]
     #[Assert\Positive]

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Orders\Controller;
 
 use App\Core\Controller\ApiController;
+use App\Core\Exception\Api\InvalidContentException;
 use App\Core\Http\RequestDtoFactory;
 use App\Orders\Dto\Request\UpdateDeliveryDateRequest;
 use App\Orders\Handler\UpdateDeliveryDateHandler;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 final class UpdateDeliveryDateController extends ApiController
 {
@@ -19,6 +21,10 @@ final class UpdateDeliveryDateController extends ApiController
     {
     }
 
+    /**
+     * @throws ExceptionInterface
+     * @throws InvalidContentException
+     */
     #[Route('/v1/orders', name: 'orders_update_delivery_date', methods: ['PATCH'])]
     public function __invoke(Request $request): JsonResponse
     {

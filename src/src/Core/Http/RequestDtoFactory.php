@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Core\Http;
 
-use App\Core\Exception\InvalidContentException;
+use App\Core\Dto\Request\IRequestDto;
+use App\Core\Exception\Api\InvalidContentException;
 use App\Core\Validator\RequestValidator;
-use App\Core\Values\IRequestDto;
+use JsonException;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Exception\PartialDenormalizationException;
@@ -24,19 +26,15 @@ final class RequestDtoFactory
      * @param class-string<T> $class
      *
      * @return T
-     *
      * @template T of IRequestDto
+     * @throws InvalidContentException
+     * @throws ExceptionInterface
      */
     public function create(string $content, string $class): IRequestDto
     {
         if (trim($content) === '')
         {
-            throw new InvalidContentException([
-                [
-                    'field'   => '',
-                    'message' => 'Request body must not be empty.',
-                ],
-            ]);
+            throw new InvalidContentException([['field' => '', 'message' => 'Request body must not be empty.']]);
         }
 
         try
@@ -44,23 +42,13 @@ final class RequestDtoFactory
             /** @var T $dto */
             $dto = $this->serializer->deserialize($content, $class, self::FORMAT);
         }
-        catch (\JsonException|NotEncodableValueException)
+        catch (JsonException|NotEncodableValueException)
         {
-            throw new InvalidContentException([
-                [
-                    'field'   => '',
-                    'message' => 'Invalid JSON payload.',
-                ],
-            ]);
+            throw new InvalidContentException([['field' => '', 'message' => 'Invalid JSON payload.',],]);
         }
         catch (NotNormalizableValueException|PartialDenormalizationException)
         {
-            throw new InvalidContentException([
-                [
-                    'field'   => '',
-                    'message' => 'Invalid request format or data types.',
-                ],
-            ]);
+            throw new InvalidContentException([['field' => '', 'message' => 'Invalid request format or data types.',],]);
         }
 
         $this->validator->validate($dto);

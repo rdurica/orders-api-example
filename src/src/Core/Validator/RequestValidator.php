@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Core\Validator;
 
-use App\Core\Exception\InvalidContentException;
-use App\Core\Values\IRequestDto;
+use App\Core\Dto\Request\IRequestDto;
+use App\Core\Exception\Api\InvalidContentException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class RequestValidator
@@ -14,6 +14,9 @@ final class RequestValidator
     {
     }
 
+    /**
+     * @throws InvalidContentException
+     */
     public function validate(IRequestDto $request): void
     {
         $violations = $this->validator->validate($request);

@@ -41,6 +41,15 @@ class OrderItem
     #[ORM\Column(type: 'integer')]
     private int $quantity;
 
+    public function __construct(string $productId, string $title, string $price, int $quantity)
+    {
+        $this->uuid = Uuid::v7();
+        $this->productId = $productId;
+        $this->title = $title;
+        $this->price = $price;
+        $this->quantity = $quantity;
+    }
+
     public function id(): ?int
     {
         return $this->id;
@@ -51,21 +60,14 @@ class OrderItem
         return $this->uuid;
     }
 
-    public function setUuid(Uuid $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
     public function order(): Order
     {
         return $this->order;
     }
 
-    public function setOrder(Order $order): self
+    public function setOrder(Order $orderEntity): self
     {
-        $this->order = $order;
+        $this->order = $orderEntity;
 
         return $this;
     }
@@ -75,23 +77,9 @@ class OrderItem
         return $this->productId;
     }
 
-    public function setProductId(string $productId): self
-    {
-        $this->productId = $productId;
-
-        return $this;
-    }
-
     public function title(): string
     {
         return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
     }
 
     public function price(): string
@@ -99,22 +87,23 @@ class OrderItem
         return $this->price;
     }
 
-    public function setPrice(string $price): self
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
     public function quantity(): int
     {
         return $this->quantity;
     }
 
-    public function setQuantity(int $quantity): self
+    public function signature(): string
     {
-        $this->quantity = $quantity;
+        return self::signatureFromValues(
+            $this->productId,
+            $this->title,
+            $this->price,
+            $this->quantity,
+        );
+    }
 
-        return $this;
+    public static function signatureFromValues(string $productId, string $title, string $price, int $quantity): string
+    {
+        return implode("\0", [$productId, $title, $price, (string) $quantity]);
     }
 }

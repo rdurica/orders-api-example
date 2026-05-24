@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Listener;
 
-use App\Core\Exception\ApiException;
+use App\Core\Exception\Api\ApiException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -60,7 +60,15 @@ final readonly class ApiExceptionListener
             $detail = 'Invalid request format or data types.';
         }
 
-        if ($exposeDetails && !($e instanceof ApiException))
+        if ($e instanceof \DomainException)
+        {
+            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $type = 'unexpected';
+            $detail = 'An unexpected error.';
+            $trace = null;
+        }
+
+        if ($exposeDetails && !($e instanceof ApiException) && !($e instanceof \DomainException))
         {
             if ($status >= Response::HTTP_INTERNAL_SERVER_ERROR)
             {
@@ -73,7 +81,7 @@ final readonly class ApiExceptionListener
 
         if ($e instanceof ApiException)
         {
-            $type = $e->type()->value;
+            $type = $e->errorCode()->value;
             $status = $e->getCode();
             $detail = $exposeDetails
                 ? $e->getMessage()

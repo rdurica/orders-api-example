@@ -6,6 +6,7 @@ namespace App\Orders\Entity;
 
 use App\Core\Trait\RecordTimestamps;
 use App\Orders\Repository\OrderRepository;
+use App\Orders\Value\OrderItem as OrderItemVo;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -43,8 +44,12 @@ class Order
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order', cascade: ['persist'], orphanRemoval: true)]
     private Collection $items;
 
-    public function __construct()
+    public function __construct(string $partnerId, string $orderId, \DateTimeImmutable $expectedDeliveryDate)
     {
+        $this->uuid = Uuid::v7();
+        $this->partnerId = $partnerId;
+        $this->orderId = $orderId;
+        $this->expectedDeliveryDate = $expectedDeliveryDate;
         $this->items = new ArrayCollection();
     }
 
@@ -58,23 +63,9 @@ class Order
         return $this->uuid;
     }
 
-    public function setUuid(Uuid $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
     public function partnerId(): string
     {
         return $this->partnerId;
-    }
-
-    public function setPartnerId(string $partnerId): self
-    {
-        $this->partnerId = $partnerId;
-
-        return $this;
     }
 
     public function orderId(): string
@@ -82,23 +73,9 @@ class Order
         return $this->orderId;
     }
 
-    public function setOrderId(string $orderId): self
-    {
-        $this->orderId = $orderId;
-
-        return $this;
-    }
-
     public function expectedDeliveryDate(): \DateTimeImmutable
     {
         return $this->expectedDeliveryDate;
-    }
-
-    public function setExpectedDeliveryDate(\DateTimeImmutable $expectedDeliveryDate): self
-    {
-        $this->expectedDeliveryDate = $expectedDeliveryDate;
-
-        return $this;
     }
 
     /** @return Collection<int, OrderItem> */
@@ -107,14 +84,47 @@ class Order
         return $this->items;
     }
 
-    public function addItem(OrderItem $item): self
+    public function addItem(OrderItem $orderItemEntity): self
     {
-        if (!$this->items->contains($item))
+        if (!$this->items->contains($orderItemEntity))
         {
-            $this->items->add($item);
-            $item->setOrder($this);
+            $this->items->add($orderItemEntity);
+            $orderItemEntity->setOrder($this);
         }
 
         return $this;
+    }
+
+    /**
+     * Check if order has same items as ValueObject. Compare theirs signatures.
+     *
+     * @param list<OrderItemVo> $orderItems
+     */
+    public function hasSameItemsAs(array $orderItems): bool
+    {
+        if (count($orderItems) !== $this->items->count())
+        {
+            return false;
+        }
+
+        $requestSignatures = array_map(
+            static fn(OrderItemVo $orderItem): string => OrderItem::signatureFromValues(
+                $orderItem->productId()->value(),
+                $orderItem->title()->value(),
+                $orderItem->price()->value(),
+                $orderItem->quantity()->value(),
+            ),
+            $orderItems,
+        );
+
+        $entitySignatures = array_map(
+            static fn(OrderItem $orderItemEntity): string => $orderItemEntity->signature(),
+            $this->items->toArray(),
+        );
+
+        sort($requestSignatures);
+        sort($entitySignatures);
+
+        return $requestSignatures === $entitySignatures;
     }
 }

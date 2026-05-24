@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Orders\Service;
 
+use App\Core\Dto\Response\SimpleResponse;
 use App\Orders\Dto\Request\UpdateDeliveryDateRequest;
-use App\Orders\Dto\Response\UpdateDeliveryDateResponse;
 
 /**
  * Skeleton service — business logic will be implemented in step 2.
@@ -17,11 +17,8 @@ use App\Orders\Dto\Response\UpdateDeliveryDateResponse;
  */
 final class UpdateDeliveryDateService
 {
-    public function update(UpdateDeliveryDateRequest $request): UpdateDeliveryDateResponse
+    public function update(UpdateDeliveryDateRequest $request): SimpleResponse
     {
-        $response = new UpdateDeliveryDateResponse();
-        $response->success = true;
-
-        return $response;
+        return new SimpleResponse('Order delivery date was updated successfully.');
     }
 }
